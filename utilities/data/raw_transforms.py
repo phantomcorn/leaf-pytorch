@@ -337,7 +337,7 @@ class PeakNormalization:
 
     def __call__(self, x):
         t0 = time.time()
-        spec = x.detach().clone().unsqueeze(0)
+        spec = x.detach().clone()
         spec = self.peak_norm(spec)
         t1 = time.time()
         return spec[0]
