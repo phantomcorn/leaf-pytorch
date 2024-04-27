@@ -111,13 +111,14 @@ def load_audio(f, sr, min_duration: float = 5.,
         x = audio.numpy()     
     # x = x.astype('float32')#.cpu().numpy()
     # assert clip_sr == sr
+    return x
 
     # min filtering and padding if needed
-    if min_samples is not None:
-        if len(x) < min_samples:
-            tile_size = (min_samples // x.shape[0]) + 1
-            x = np.tile(x, tile_size)[:min_samples]
-    return x
+    # if min_samples is not None:
+    #     if len(x) < min_samples:
+    #         tile_size = (min_samples // x.shape[0]) + 1
+    #         x = np.tile(x, tile_size)[:min_samples]
+    # return x
 
 
 def load_audio_bytes(buffer, sr, min_duration: float = 5.,
