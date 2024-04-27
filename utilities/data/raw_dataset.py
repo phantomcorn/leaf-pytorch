@@ -1,27 +1,15 @@
 import os
 import math
 import time
-import io
-import lmdb
-import tqdm
-import glob
-import numpy as np
-import librosa
-import torch
 import json
-import random
-import pandas as pd
+import numpy as np
 from torch.utils.data import Dataset
 from typing import Tuple, Optional
 from utilities.data.raw_waveform_parser import RawAudioParser
-import soundfile as sf
-from utilities.data.utils import load_audio, load_audio_bytes
-import msgpack
-import msgpack_numpy as msgnp
-
+from utilities.data.utils import load_audio,load_audio_bytes
 
 class RawWaveformDataset(Dataset):
-    def __init__(self, manifest_path, labels_map, audio_config, augment=False,
+    def __init__(self, manifest_path, labels_map, audio_config, audio_path,augment=False,
                  mode='multilabel', delimiter=",",
                  mixer=None, transform=None, is_val=False,
                  cropped_read=False):
@@ -34,6 +22,7 @@ class RawWaveformDataset(Dataset):
         self.mixer = mixer
         self.cropped_read = cropped_read
         self.is_val = is_val
+        self.audio_path = audio_path
 
         with open(labels_map, 'r') as fd:
             self.labels_map = json.load(fd)
@@ -79,7 +68,7 @@ class RawWaveformDataset(Dataset):
             dur = self.durations[index]
         else:
             dur = None
-        preprocessed_audio = load_audio(self.files[index], self.sr, self.min_duration,
+        preprocessed_audio = load_audio(f'{self.audio_path}/{self.files[index]}.wav', self.sr, self.min_duration,
                                         read_cropped=self.cropped_read,
                                         frames_to_read=self.num_frames,
                                         audio_size=dur)
