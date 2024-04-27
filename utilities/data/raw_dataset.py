@@ -45,12 +45,12 @@ class RawWaveformDataset(Dataset):
         else:
             self.bg_files = None
         df = pd.read_csv(manifest_path)
-        files = df['files'].values.tolist()
-        labels = df['labels'].values.tolist()
+        files = df['YTID'].values.tolist()
+        labels = df['positive_labels'].values.tolist()
         self.files = files
         self.labels = labels
-        if self.cropped_read:
-            self.durations = df['durations'].values.tolist()
+        # if self.cropped_read:
+        #     self.durations = df['durations'].values.tolist()
         self.spec_parser = RawAudioParser(normalize_waveform=self.normalize)
         self.length = len(self.files)
 
@@ -91,15 +91,12 @@ class RawWaveformDataset(Dataset):
         return real, comp, label_tensor
 
     def __parse_labels__(self, lbls: str) -> torch.Tensor:
-        if self.mode == "multilabel":
-            label_tensor = torch.zeros(len(self.labels_map)).float()
-            for lbl in lbls.split(self.labels_delim):
-                label_tensor[self.labels_map[lbl]] = 1
+        label_tensor = torch.zeros(len(self.labels_map)).float()
+        for lbl in lbls.split(self.labels_delim):
+            label_tensor[self.labels_map[lbl]] = 1
 
-            return label_tensor
-        elif self.mode == "multiclass":
-            # print("multiclassssss")
-            return self.labels_map[lbls]
+        return label_tensor
+   
 
     def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor]:
         real, comp, label_tensor = self.__get_item_helper__(index)
