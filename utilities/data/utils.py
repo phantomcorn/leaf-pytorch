@@ -1,6 +1,7 @@
 import torch
 import random
 import soundfile as sf
+import torchaudio
 import numpy as np
 import io
 
@@ -104,7 +105,10 @@ def load_audio(f, sr, min_duration: float = 5.,
         # print("start_idx: {} | clip size: {} | frames_to_read:{}".format(start_idx, len(x), frames_to_read))
         min_samples = frames_to_read
     else:
-        x, clip_sr = sf.read(f)     # sound file is > 3x faster than torchaudio sox_io
+        audio,clip_sr = torchaudio.load(f)
+        audio = torchaudio.functional.resample(audio, orig_freq=clip_sr, new_freq=16000)
+        audio = torch.mean(audio, 0, keepdim=True)
+        x = audio.numpy()     
     x = x.astype('float32')#.cpu().numpy()
     assert clip_sr == sr
 
