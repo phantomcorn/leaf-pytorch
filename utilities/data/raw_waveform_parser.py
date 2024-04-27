@@ -19,5 +19,5 @@ class RawAudioParser(object):
             mean = output.mean()
             std = output.std()
             output = (output - mean) / (std + 1e-9)
-        output = output
+        output = output.unsqueeze(0)
         return output, None

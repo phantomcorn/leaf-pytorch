@@ -122,7 +122,7 @@ class RandomCrop:
         self.size = size
 
     def __call__(self, signal):
-        start = random.randint(0, signal.shape[1] - self.size)
+        start = random.randint(0, signal.shape[2] - self.size)
         return signal[:, start: start + self.size]
 
 
@@ -132,8 +132,8 @@ class CenterCrop:
 
     def __call__(self, signal):
 
-        if signal.shape[1] > self.size:
-            start = (signal.shape[1] - self.size) // 2
+        if signal.shape[2] > self.size:
+            start = (signal.shape[2] - self.size) // 2
             return signal[:, start: start + self.size]
         else:
             return signal
@@ -146,8 +146,8 @@ class PadToSize_NP:
         self.mode = mode
 
     def __call__(self, signal):
-        if signal.shape[1] < self.size:
-            padding = self.size - signal.shape[1]
+        if signal.shape[2] < self.size:
+            padding = self.size - signal.shape[2]
             offset = padding // 2
             pad_width = ((0, 0), (offset, padding - offset))
             if self.mode == 'constant':
@@ -165,8 +165,8 @@ class PadToSize:
         self.mode = mode
 
     def __call__(self, signal):
-        if signal.shape[1] < self.size:
-            padding = self.size - signal.shape[1]
+        if signal.shape[2] < self.size:
+            padding = self.size - signal.shape[2]
             offset = padding // 2
             pad_width = ((0, 0), (offset, padding - offset))
             if self.mode == 'constant':
