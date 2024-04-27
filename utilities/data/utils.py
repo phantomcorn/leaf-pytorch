@@ -109,8 +109,8 @@ def load_audio(f, sr, min_duration: float = 5.,
         audio = torchaudio.functional.resample(audio, orig_freq=clip_sr, new_freq=16000)
         audio = torch.mean(audio, 0, keepdim=True)
         x = audio.numpy()     
-    x = x.astype('float32')#.cpu().numpy()
-    assert clip_sr == sr
+    # x = x.astype('float32')#.cpu().numpy()
+    # assert clip_sr == sr
 
     # min filtering and padding if needed
     if min_samples is not None:
