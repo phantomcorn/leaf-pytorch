@@ -106,7 +106,10 @@ def load_audio(f, sr, min_duration: float = 5.,
         min_samples = frames_to_read
     else:
         audio,clip_sr = torchaudio.load(f)
-        audio = torchaudio.functional.resample(audio, orig_freq=clip_sr, new_freq=16000)
+        audio = torchaudio.functional.resample(audio, orig_freq=clip_sr, new_freq=sr)
+        sample_size = audio.size(1)
+        if sample_size % sr != 0:
+          audio = audio[:sample_size // sr] #crop to sample size divisble by sr
         audio = torch.mean(audio, 0, keepdim=True)
         x = audio.numpy()     
     # x = x.astype('float32')#.cpu().numpy()
